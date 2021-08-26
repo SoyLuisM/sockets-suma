@@ -11,20 +11,21 @@
 
 int main(int argc, char*argv[]){
     if(argc == 2){
-        int socket_server, socket_client;
+        int sock_serv_fd, sock_cli_fd;
         int size_dgram;
-        int puerto = atoi(argv[1]);
+        int PORT = atoi(argv[1]);
         char buffer[MAXLINES];
 
         struct sockaddr_in server;
         struct sockaddr_in client;
+
         server.sin_family = PF_INET;
-        server.sin_port = htons(puerto);
+        server.sin_port = htons(PORT);
         server.sin_addr.s_addr = INADDR_ANY;
 
-        socket_client = sizeof(socket_client);
+        sock_cli_fd = sizeof(client);
 
-        if( (socket_server = socket(PF_INET,SOCK_DGRAM,IPPROTO_UDP)) < 0){
+        if( (sock_serv_fd = socket(PF_INET,SOCK_DGRAM,IPPROTO_UDP)) < 0){
             perror("Error al crear el socket\n");
             exit(-1);
         }
@@ -32,22 +33,22 @@ int main(int argc, char*argv[]){
             printf("socket inizializado\n");
         }
 
-        if(bind (socket_server, (struct sockaddr *)&server, sizeof(struct sockaddr)) < 0){
-            printf("socket creado\n");
-        }else{
+        if(bind (sock_serv_fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1){
             printf("Error en bind\n");
             exit(-1);
+        }else{
+            printf("socket creado\n");
         }
 
-        size_dgram = recvfrom(socket_server,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&client,&socket_client);
-        // buffer[size_dgram] = "\n";
+        size_dgram = recvfrom(sock_serv_fd,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&client,&sock_cli_fd);
+        buffer[size_dgram] = '\0';
         printf("mensaje del cliente: %s\n",buffer);
-        close (socket_server);
+        close (sock_serv_fd);
         printf("bye\n");
     }
     else{
         printf("sintaxis del script\n");
-        printf("./Server [puerto] \n");
+        printf("./Server num_puerto \n");
     }
-    return 0;
+    return 1;
 }
