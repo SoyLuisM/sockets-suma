@@ -7,13 +7,16 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MAXLINE 1024
+#define MAXLINES 1024
   
 int main(int argc, char *argv[]) {
     if(argc == 2){
-        int sock_cli_fd;
+        int sock_cli_fd,sock_serv_fd;
         int PORT = atoi(argv[1]);
         char msg[] = "15";
+        int size_dgram;
+        int result = 0;
+        char buffer[MAXLINES];
 
         struct sockaddr_in server;
         
@@ -28,23 +31,38 @@ int main(int argc, char *argv[]) {
         else{
             printf("socket inizializado\n");
         }
-        printf("ingrese un numero\n");
-        scanf("%s",msg);
-        sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
+        do{
+            printf("ingrese un numero\n");
+            scanf("%s",msg);
+            sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
 
-        printf("ingrese un numero\n");
-        scanf("%s",msg);
-        sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
-        
-        printf("ingrese un numero\n");
-        scanf("%s",msg);
-        sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
+            printf("ingrese un numero\n");
+            scanf("%s",msg);
+            sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
+            
+            printf("ingrese un numero\n");
+            scanf("%s",msg);
+            sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
 
-        printf("ingrese un numero\n");
-        scanf("%s",msg);
-        sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
-        
-        printf("mensaje enviado\n");
+            printf("ingrese un numero\n");
+            scanf("%s",msg);
+            sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
+
+            printf("mensaje enviado\n");
+
+            size_dgram = recvfrom(sock_cli_fd,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&server,&sock_serv_fd);
+            printf("el mensaje del servidor es %s\n", buffer);
+            result = atoi(buffer);
+
+            if(result == -1){
+                printf("el resultado no es valido\n");
+                sleep(1);
+                //system("clear");
+            }else{
+                printf("el resultado es correcto\n");
+            }
+            close(sock_serv_fd);
+        }while(result == -1);
     }else{
         printf("sintaxis del script\n");
         printf("./Client num_puerto \n");
