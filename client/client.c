@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     if(argc == 2){
         int sock_cli_fd;
         int PORT = atoi(argv[1]);
-        char *msg = "hola desde el cliente";
+        char msg[] = "15";
 
         struct sockaddr_in server;
         
@@ -28,9 +28,22 @@ int main(int argc, char *argv[]) {
         else{
             printf("socket inizializado\n");
         }
-
+        printf("ingrese un numero\n");
+        scanf("%s",msg);
         sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
 
+        printf("ingrese un numero\n");
+        scanf("%s",msg);
+        sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
+        
+        printf("ingrese un numero\n");
+        scanf("%s",msg);
+        sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
+
+        printf("ingrese un numero\n");
+        scanf("%s",msg);
+        sendto(sock_cli_fd, (const char *)msg, strlen(msg), MSG_CONFIRM, (const struct sockaddr *) &server, sizeof(server));
+        
         printf("mensaje enviado\n");
     }else{
         printf("sintaxis del script\n");

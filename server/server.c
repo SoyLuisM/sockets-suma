@@ -15,6 +15,7 @@ int main(int argc, char*argv[]){
         int size_dgram;
         int PORT = atoi(argv[1]);
         char buffer[MAXLINES];
+        int num[MAXLINES];
 
         struct sockaddr_in server;
         struct sockaddr_in client;
@@ -33,18 +34,44 @@ int main(int argc, char*argv[]){
             printf("socket inizializado\n");
         }
 
-        if(bind (sock_serv_fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1){
+        if(bind (sock_serv_fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) < 0){
             printf("Error en bind\n");
             exit(-1);
         }else{
             printf("socket creado\n");
         }
+        
+        while(1){
+            // sleep(1);
+            // system("clear");
+            printf("Esperando una nueva conexion\n");
 
-        size_dgram = recvfrom(sock_serv_fd,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&client,&sock_cli_fd);
-        buffer[size_dgram] = '\0';
-        printf("mensaje del cliente: %s\n",buffer);
+            size_dgram = recvfrom(sock_serv_fd,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&client,&sock_cli_fd);
+            buffer[size_dgram] = '\0';
+
+            num[1]=atoi(buffer);
+
+            size_dgram = recvfrom(sock_serv_fd,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&client,&sock_cli_fd);
+            buffer[size_dgram] = '\0';
+
+            num[2]=atoi(buffer);
+
+            size_dgram = recvfrom(sock_serv_fd,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&client,&sock_cli_fd);
+            buffer[size_dgram] = '\0';
+
+            num[3]=atoi(buffer);
+
+            size_dgram = recvfrom(sock_serv_fd,(char *)buffer, MAXLINES, MSG_WAITALL, (struct sockaddr *)&client,&sock_cli_fd);
+            buffer[size_dgram] = '\0';
+
+            num[4]=atoi(buffer);
+
+            printf("mensaje del cliente: %d %d %d %d\n", num[1],num[2], num[3],num[4]);
+            printf("bye\n");
+
+            close(sock_cli_fd);
+        }
         close (sock_serv_fd);
-        printf("bye\n");
     }
     else{
         printf("sintaxis del script\n");
